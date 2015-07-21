@@ -25,7 +25,8 @@
   "permissions": [
     "tabs",
     "background",
-    "geolocation"
+    "geolocation",
+    "storage"
   ],
   "web_accessible_resources": [
     "css/display.css"

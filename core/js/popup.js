@@ -25,7 +25,7 @@ google.maps.event.addListener(autocomplete, 'place_changed', function() {
 
   end = place.geometry.location;
 
-  chrome.runtime.sendMessage({name: "calculateRoute", data: {start: start, end: end}});
+  chrome.runtime.sendMessage({name: "saveRoute", data: {start: start, end: end}});
 });
 
 
