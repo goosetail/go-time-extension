@@ -1,31 +1,68 @@
-//alert('content script injected');
-var display = document.createElement('div')
-display.id = 'go-time-display';
+(function goTimeDisplay(){
+	var display;
+	var locationsList;
 
-var duration = document.createElement('span');
-duration.id = 'go-time-duration';
+	function initDOM(){
+		display = document.createElement('div')
+		display.id = 'go-time-display';
 
-var loadingText = document.createTextNode('Loading...');
+		locationsList = document.createElement('ul');
+		locationsList.id = 'locations-list';
 
-duration.appendChild(loadingText);
+		display.appendChild(locationsList);
 
-display.appendChild(duration);
-
-document.body.appendChild(display);
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.name === 'updateDuration') {
-      updateDuration(request.data.duration.text);
-    }
-});
-
-chrome.runtime.sendMessage({name: 'getRoute'}, function(response){
-	console.log('route retrieved', response);
-	if(response && response.duration){
-		updateDuration(response.duration.text);
+		document.body.appendChild(display);
 	}
-});
 
-function updateDuration(text){
-	duration.innerHTML = text;
-}
+	function addEventListeners(){
+
+		chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	    if (request.name === 'updateRoutes') {
+	    	updateRoutes(request.data);
+	    }
+		});
+
+	}
+
+	function getRoutes(){
+		chrome.runtime.sendMessage({name: 'getRoutes'}, function(response){
+			if(response && response.data){
+				updateRoutes(response.data);
+			}
+		});
+	}
+
+	function updateRoutes(routes){
+		locationsList.innerHTML = '';
+
+		for(var i = 0; i < routes.length; i++){
+			addRoute(routes[i]);
+		}
+	}
+
+	function addRoute(route){
+		var li = document.createElement('li');
+
+		var routeLink = document.createElement('a');
+		routeLink.className = 'route-link';
+
+		var startAddress = route.legs[0].start_address;
+		var endAddress = route.legs[0].end_address;
+
+		routeLink.href = 'https://maps.google.com?saddr='+startAddress+'&daddr='+endAddress;
+
+		var duration = route.legs[0].duration.text;
+		var durationText = document.createTextNode(duration);
+
+		routeLink.appendChild(durationText);
+		li.appendChild(routeLink);
+
+		locationsList.appendChild(li)
+	}
+
+	initDOM();
+	addEventListeners();
+	getRoutes();
+
+})(); 
+

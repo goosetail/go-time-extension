@@ -5,11 +5,20 @@
 	</head>
 	<body>
 		<div class = "container">
-			<div id="search-container">
-				<label for="autocomplete"> Enter a location
-					<input id = "pac-input", name="autocomplete", value="">
+				<h2> New Location </h2>
+				<label> Name
+					<input id = "name-input", name="name", value="", placeholder="Enter a name">
 				</label>
-			</div>
+
+				<label> Address
+					<input id = "address-input", name="autocomplete", value="", placeholder="Enter an address">
+				</label>
+
+				<h2 class = "location-header"> Saved Locations </h2>
+				<ul id = "saved-locations">
+				</ul>
+		</div>
+
 		</div>
 		<script src = "/js/popup.js"></script>
 	</body>

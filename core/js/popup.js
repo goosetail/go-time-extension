@@ -1,32 +1,93 @@
-var input = document.getElementById('pac-input');
-var autocomplete = new google.maps.places.Autocomplete(input);
-var start;
-var end;
+var addressInput = document.getElementById('address-input');
+var nameInput = document.getElementById('name-input');
+var autocomplete = new google.maps.places.Autocomplete(addressInput);
+var savedLocations = document.getElementById('saved-locations');
 
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+function attachEventListeners() {
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    var place = autocomplete.getPlace();
+
+    if(!place.geometry){
+      alert('We couldn\'t find that location. :(');
+      return;
+    }
+
+    var location = {
+      label: nameInput.value,
+      name: place.name,
+      coordinates: place.geometry.location,
+    }
+
+    saveLocation(location);
+  });
 }
 
-function successFunction(position) {
-  start = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+function getLocations(){
+   chrome.storage.sync.get('locations', function(data){
+    if(data && data.locations && data.locations.length){
+      for(var i = 0; i < data.locations.length; i++){
+        addToSavedLocations(data.locations[i]);
+      }
+    }
+  });
 }
 
-function errorFunction(err){
-  alert('We could not determine where you are.');
+function saveLocation(location){
+   chrome.runtime.sendMessage({name: 'saveLocation', data: location}, function(response){
+      addToSavedLocations(location);
+   });
 }
 
-google.maps.event.addListener(autocomplete, 'place_changed', function() {
-  var place = autocomplete.getPlace();
+function addToSavedLocations(location){
 
-  if(!place.geometry){
-    alert('We couldn\'t find that location. :(');
-    return;
-  }
+  var locationItem = document.createElement('li');
+  locationItem.className = 'saved-location';
+  locationItem.id = location.label + '-location';
 
-  end = place.geometry.location;
+  var locationLabel = document.createElement('label');
+  locationLabel.className = 'location-label';
 
-  chrome.runtime.sendMessage({name: 'saveRoute', data: {start: start, end: end}});
-});
+  var labelText = document.createTextNode(location.label);
+
+  var locationName = document.createElement('span');
+  locationName.className = 'location-name';
+
+  var nameText = document.createTextNode(location.name);
+  locationName.appendChild(nameText);
+
+  var removeIcon = document.createElement('span');
+  removeIcon.className = 'remove-icon';
+
+  removeIcon.addEventListener('click', function(){
+    removeLocation(location);
+  });
+
+  locationLabel.appendChild(labelText);
+  locationLabel.appendChild(locationName);
+  locationLabel.appendChild(removeIcon);
+
+
+  locationItem.appendChild(locationLabel);
+
+  savedLocations.appendChild(locationItem);
+
+}
+
+function removeLocation(location){
+
+  var locationItem = document.getElementById(location.label + '-location');
+
+  console.log(locationItem);
+  
+  chrome.runtime.sendMessage({name: 'deleteLocation', data: location}, function(response){
+      savedLocations.removeChild(locationItem);
+   });
+
+
+}
+
+getLocations();
+attachEventListeners();
 
 
 
