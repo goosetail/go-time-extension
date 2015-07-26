@@ -94,7 +94,7 @@ function addEventListeners(){
 
 
   chrome.tabs.onActivated.addListener(function(){
-    seteTimeout(calculateRoutes,0);
+    setTimeout(calculateRoutes,0);
   })
 }
 
