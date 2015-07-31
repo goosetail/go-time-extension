@@ -22,6 +22,12 @@ function attachEventListeners() {
   });
 }
 
+function saveLocation(location){
+   chrome.runtime.sendMessage({name: 'saveLocation', data: location}, function(response){
+      addToSavedLocations(location);
+   });
+}
+
 function getLocations(){
    chrome.storage.sync.get('locations', function(data){
     if(data && data.locations && data.locations.length){
@@ -30,12 +36,6 @@ function getLocations(){
       }
     }
   });
-}
-
-function saveLocation(location){
-   chrome.runtime.sendMessage({name: 'saveLocation', data: location}, function(response){
-      addToSavedLocations(location);
-   });
 }
 
 function addToSavedLocations(location){
@@ -66,7 +66,6 @@ function addToSavedLocations(location){
   locationLabel.appendChild(locationName);
   locationLabel.appendChild(removeIcon);
 
-
   locationItem.appendChild(locationLabel);
 
   savedLocations.appendChild(locationItem);
@@ -76,13 +75,10 @@ function addToSavedLocations(location){
 function removeLocation(location){
 
   var locationItem = document.getElementById(location.label + '-location');
-
-  console.log(locationItem);
   
   chrome.runtime.sendMessage({name: 'deleteLocation', data: location}, function(response){
-      savedLocations.removeChild(locationItem);
-   });
-
+    savedLocations.removeChild(locationItem);
+ });
 
 }
 

@@ -2,9 +2,10 @@ var locations = [];
 var routes = [];
 var directionsService = new google.maps.DirectionsService();
 
-function calculateRoutes(){
-  chrome.storage.sync.get('locations', function(data){
+function calculateAllRoutes(){
 
+  chrome.storage.sync.get('locations', function(data){
+    
     if(data && data.locations && data.locations.length){
       locations = data.locations;
       
@@ -14,40 +15,62 @@ function calculateRoutes(){
 
       function successFunction(position) {
 
-        routes = [];
-
         var start = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 
         for(var i = 0; i < data.locations.length; i++){
 
           var end = new google.maps.LatLng(data.locations[i].coordinates.A, data.locations[i].coordinates.F);
 
-          var request = {
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode.DRIVING
-          };
-
-          directionsService.route(request, function(result, status) {
-            if(result && result.routes.length) {
-              route = result.routes[0]
-              routes.push(route);
-              updateDisplay()
-            }
-          });
+          calculateRoute(data.locations[i], start, end);
         }
-
-        
       }
 
       function errorFunction(err){
         alert('We could not determine where you are. That makes things rather difficult you see.');
       }
     }
+    else{
+      updateDisplay()
+    }
   })
 }
 
+function calculateRoute(location, start, end){
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+
+  directionsService.route(request, function(result, status) {
+    if(result && result.routes.length) {
+      route = {
+        location: location,
+        data: result.routes[0]
+      }
+
+      for(var i = 0; i < routes.length; i++){
+        var replaced = false;
+
+        if(routes[i].location.label === route.location.label){
+          replaced = true;
+          routes[i] = route;
+          break;
+        }
+      }
+
+      if(!replaced){
+        routes.push(route);
+      }
+
+      updateDisplay();
+    }
+  });
+}
+
 function updateDisplay(){
+  console.log('update display');
+  console.log(routes);
   chrome.tabs.query({}, function(tabs) {
     for (var i=0; i< tabs.length; ++i) {
       chrome.tabs.sendMessage(tabs[i].id, {name: 'updateRoutes', data: routes});
@@ -56,6 +79,7 @@ function updateDisplay(){
 }
 
 function addEventListeners(){
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.name === 'saveLocation') {
       
@@ -64,14 +88,13 @@ function addEventListeners(){
 
       chrome.storage.sync.set({'locations': locations}, function(data) {
         sendResponse();
-        calculateRoutes();
+        calculateAllRoutes();
       });
 
       return true;
     }
 
     else if(request.name === 'deleteLocation'){
-
 
       for(var i = locations.length -1; i >= 0; i--){
         if(locations[i].label === request.data.label){
@@ -81,7 +104,7 @@ function addEventListeners(){
 
       chrome.storage.sync.set({'locations': locations}, function(data) {
         sendResponse();
-        calculateRoutes();
+        calculateAllRoutes();
       }); 
 
       return true;
@@ -94,15 +117,14 @@ function addEventListeners(){
 
 
   chrome.tabs.onActivated.addListener(function(){
-    setTimeout(calculateRoutes,0);
+    setTimeout(calculateAllRoutes,0);
   })
 }
 
 var goTime = function(){
-  calculateRoutes();
-  setTimeout(goTime, 300000);
+  calculateAllRoutes();
+  setTimeout(goTime, 5000);
 }
-
 
 addEventListeners();
 goTime();
