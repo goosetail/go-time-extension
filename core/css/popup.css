@@ -21,14 +21,14 @@ h1 {
 }
 
 h2 {
-	font-size: 14px;
+	font-size: 12px;
 	text-transform: uppercase;
 	font-weight: normal;
 	font-weight: 200;
 }
 
 .hide{
-	display: none;
+	display: none !important;
 }
 
 .container {
@@ -55,10 +55,14 @@ h2 {
 	margin-left: 20px;
 }
 
+#new-location{
+	clear: both;
+}
+
 #locations-list {
 	list-style-type: none;
 	padding-left: 0;
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 }
 
 .saved-location{
@@ -75,15 +79,14 @@ h2 {
 	background-size: contain;
 	width: 8px;
 	height: 9px;
-	margin: -1px 0 0 10px;
+	margin: 7px 0 0 0;
 	cursor: pointer;
 	float: right;
 }
 
 .location-label{
 	font-size: 16px;
-	display: block;
-	margin-bottom: 4px;
+	margin-right: 10px;
 }
 
 .location-name{
@@ -91,19 +94,18 @@ h2 {
 	font-weight: 200;
 }
 
-.route-link, .location-container {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.location-container{
-	width: 305px;
-}
-
 .route-link{
 	text-decoration: none;
-	width: 50px;
+	width: 305px;
 	text-align: center;
 	padding: 0 15px 0 0;
 	color: #555;
+}
+
+#new-location-link, #cancel-new-location-link{
+	float: right;
+	display: block;
+	margin: 10px 0;
+	color: #555;
+	text-decoration: none;
 }

@@ -1,13 +1,19 @@
 var addressInput = document.getElementById('address-input');
 var nameInput = document.getElementById('name-input');
 var autocomplete = new google.maps.places.Autocomplete(addressInput);
+var newLocation = document.getElementById('new-location');
 var savedLocations = document.getElementById('saved-locations');
 var locationsList = document.getElementById('locations-list');
+var newLocationLink = document.getElementById('new-location-link');
+var cancelNewLocationLink = document.getElementById('cancel-new-location-link');
 var directionsService = new google.maps.DirectionsService();
 var routes = [];
 var locations = [];
 
 function attachEventListeners() {
+  newLocationLink.addEventListener('click', showNewLocation);
+  cancelNewLocationLink.addEventListener('click', hideNewLocation);
+
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
     var place = autocomplete.getPlace();
 
@@ -23,17 +29,7 @@ function attachEventListeners() {
     }
 
     saveLocation(location);
-    resetInputs();
   });
-}
-
-function resetInputs(){
-  setTimeout(function(){
-     nameInput.value = '';
-    addressInput.value = '';
-    addressInput.blur();
-  }, 0)
- 
 }
 
 function saveLocation(location){
@@ -43,6 +39,8 @@ function saveLocation(location){
     showSavedLocations();
     createLoadingItem('Calculating route...');
     calculateRouteForLocations([location]);
+    hideNewLocation();
+
   });
 }
 
@@ -54,6 +52,9 @@ function getLocations(){
 
       locations = data.locations;
       calculateRouteForLocations(data.locations);
+    }
+    else{
+      showNewLocation();
     }
   });
 }
@@ -80,9 +81,41 @@ function removeLoadingItem(){
 }
 
 function showSavedLocations(){
-  console.log(savedLocations);
   savedLocations.classList.remove('hide');
 }
+
+function hideSavedLocations(){
+  savedLocations.classList.add('hide');
+}
+
+function showNewLocation(){
+  hideNewLocationLink();
+  newLocation.classList.remove('hide');
+}
+
+function hideNewLocation(){
+  resetInputs();
+  showNewLocationLink();
+  newLocation.classList.add('hide');
+}
+
+function showNewLocationLink(){
+  newLocationLink.classList.remove('hide');
+}
+
+function hideNewLocationLink(){
+  newLocationLink.classList.add('hide');
+}
+
+function resetInputs(){
+  setTimeout(function(){
+     nameInput.value = '';
+    addressInput.value = '';
+    addressInput.blur();
+  }, 0)
+}
+
+
 
 function addToSavedLocations(route){
   
@@ -100,24 +133,14 @@ function addToSavedLocations(route){
 
   routeLink.href = 'https://maps.google.com?saddr='+startAddress+'&daddr='+endAddress;
 
-  var duration = route.data.legs[0].duration.text;
+  var duration = route.data.legs[0].duration.text + ' to ' + route.location.label;
   var durationText = document.createTextNode(duration);
 
-  routeLink.appendChild(durationText);
-
-  locationItem.appendChild(routeLink);
-
-  // Name of the location, and remove icon
-  var locationContainer = document.createElement('div');
-  locationContainer.className = 'location-container';
-
   var locationLabel = document.createElement('span');
-  var labelText = document.createTextNode(route.location.label);
-
   locationLabel.className = 'location-label';
-  locationLabel.appendChild(labelText);
+  locationLabel.appendChild(durationText);
 
-  locationContainer.appendChild(locationLabel);
+  routeLink.appendChild(locationLabel);
 
   var locationName = document.createElement('span');
   var nameText = document.createTextNode(route.location.name);
@@ -125,7 +148,7 @@ function addToSavedLocations(route){
   locationName.className = 'location-name';
   locationName.appendChild(nameText);
 
-  locationContainer.appendChild(locationName);
+  routeLink.appendChild(locationName);
 
   var removeIcon = document.createElement('span');
   removeIcon.className = 'remove-icon';
@@ -134,10 +157,8 @@ function addToSavedLocations(route){
     removeLocation(route.location);
   });
 
-
-  locationContainer.appendChild(removeIcon);
-
-  locationItem.appendChild(locationContainer);
+  locationItem.appendChild(routeLink);
+  locationItem.appendChild(removeIcon);
 
   locationsList.appendChild(locationItem);
 
@@ -223,6 +244,9 @@ function calculateRoute(location, start, end){
 
 getLocations();
 attachEventListeners();
+setTimeout(function(){
+  newLocationLink.blur();
+  }, 200)
 
 
 
