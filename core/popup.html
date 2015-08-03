@@ -5,19 +5,28 @@
 	</head>
 	<body>
 		<div class = "container">
-				<h2> New Location </h2>
-				<label> Name
-					<input id = "name-input", name="name", value="", placeholder="Enter a name">
-				</label>
+				<h1 id = "brand"> Go Time! </div>
 
-				<label> Address
-					<input id = "address-input", name="autocomplete", value="", placeholder="Enter an address">
-				</label>
+				<div class="content">
 
-				<h2 class = "location-header"> Saved Locations </h2>
-				<ul id = "saved-locations">
-				</ul>
-		</div>
+					<div id = "saved-locations", class = "hide">
+						<h2 class> Saved Locations </h2>
+						<ul id = "locations-list">
+						</ul>
+					</div>
+
+					<div id="new-location">
+						<h2> New Location </h2>
+						<label> Name
+							<input id = "name-input", name="name", value="", placeholder="Enter a name", tabindex="1">
+						</label>
+
+						<label> Address
+							<input id = "address-input", name="autocomplete", value="", placeholder="Enter an address", tabindex="2">
+						</label>
+					</div>
+
+				</div>
 
 		</div>
 		<script src = "/js/popup.js"></script>
