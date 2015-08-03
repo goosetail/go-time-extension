@@ -1,22 +1,22 @@
 {
-  "manifest_version": 2,
-  "name": "Go Time! - It's time to go.",
-  "short_name": "Go Time!",
-  "version": "0.0.1",
-  "description": "",
-  "browser_action": {
-    "default_icon": {                    
-      "38": "images/go-time-icon.png"           
-    },
-    "default_title": "Go Time!",      
-    "default_popup": "popup.html"       
-  },
-  "permissions": [
-    "geolocation",
-    "storage"
-  ],
-  "web_accessible_resources": [
-    "css/display.css"
-  ],
+	"manifest_version": 2,
+	"name": "Go Time! - It's time to go.",
+	"short_name": "Go Time!",
+	"version": "0.0.1",
+	"description": "",
+	"browser_action": {
+		"default_icon": {
+			"38": "images/go-time-icon.png"
+		},
+		"default_title": "Go Time!",
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"geolocation",
+		"storage"
+	],
+	"web_accessible_resources": [
+		"css/display.css"
+	],
 "content_security_policy": "script-src 'self' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com; object-src 'self'"
 }

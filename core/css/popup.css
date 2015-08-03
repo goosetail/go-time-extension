@@ -1,9 +1,9 @@
-body{
+body {
 	margin: 0;
 	padding: 0;
 }
 
-label{
+label {
 	display: block;
 	width: 100%;
 	margin: 10px 0 5px 10px;
@@ -11,7 +11,6 @@ label{
 
 h1 {
 	margin: 0;
-	padding: 0;
 	font-size: 14px;
 	font-weight: normal;
 	background-color: #f5f5f5;
@@ -22,11 +21,10 @@ h1 {
 h2 {
 	font-size: 12px;
 	text-transform: uppercase;
-	font-weight: normal;
 	font-weight: 200;
 }
 
-.hide{
+.hide {
 	display: none !important;
 }
 
@@ -45,7 +43,7 @@ h2 {
 	margin-bottom: 20px;
 }
 
-#address-input:focus{
+#address-input:focus {
 	margin-bottom: 200px;
 }
 
@@ -54,7 +52,7 @@ h2 {
 	margin-left: 20px;
 }
 
-#new-location{
+#new-location {
 	clear: both;
 }
 
@@ -64,16 +62,16 @@ h2 {
 	margin-bottom: 10px;
 }
 
-.saved-location{
+.saved-location {
 	padding: 10px 0;
 	border-bottom: 1px solid #efefef;
 }
 
-.saved-location:first-child{
+.saved-location:first-child {
 	padding-top: 0;
 }
 
-.remove-icon{
+.remove-icon {
 	background: url('/images/close-x.png') no-repeat;
 	background-size: contain;
 	width: 8px;
@@ -83,17 +81,17 @@ h2 {
 	float: right;
 }
 
-.location-label{
+.location-label {
 	font-size: 16px;
 	margin-right: 10px;
 }
 
-.location-name{
+.location-name {
 	font-size: 12px;
 	font-weight: 200;
 }
 
-.route-link{
+.route-link {
 	text-decoration: none;
 	width: 305px;
 	text-align: center;
@@ -101,7 +99,7 @@ h2 {
 	color: #555;
 }
 
-#new-location-link, #cancel-new-location-link{
+#new-location-link, #cancel-new-location-link {
 	float: right;
 	display: block;
 	margin: 10px 0;
