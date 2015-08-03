@@ -244,9 +244,11 @@ function calculateRoute(location, start, end){
 
 getLocations();
 attachEventListeners();
+
+// chrome autofocuses the first link when the pop up opens and it's kind of annoying
 setTimeout(function(){
   newLocationLink.blur();
-  }, 200)
+}, 200)
 
 
 
